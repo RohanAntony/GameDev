@@ -11,6 +11,15 @@ using std::endl;
 using std::cerr;
 using std::cout;
 
+enum class GameEvents {
+	QUIT,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	NONE
+};
+
 class GameWindow {
 	int screenWidth;
 	int screenHeight;
@@ -38,7 +47,7 @@ public:
 	void fillWindowWithColor(int, int, int);
 	void updateWindowSurface();
 	bool loadImage(string);
-	void wait();
+	GameEvents getEvent();
 
 	~GameWindow() {
 		SDL_DestroyWindow(window);

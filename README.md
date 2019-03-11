@@ -15,7 +15,7 @@ Wrapper written around C++ for building SDL based items.
 
 ## How to use
 - Setup the build environment as mentioned above
-- Include 'GameWindows.h'.
+- Include 'GameBase.h' and 'GameWindows.h'.
 - Initialize main with object of GameBase such as below which will setup and teardown SDL for you.
 	- `GameBase gb;`
 - Create a GameWindow object which will handle SDL Window. 
@@ -28,4 +28,9 @@ Wrapper written around C++ for building SDL based items.
 	- `gWin1.updateWindowSurface();`
 - Also pause execution by calling pause
 	- `pause(int milliseconds);`
+- To get the last event clicked, call getEvent which returns a value for enum GameEvents;
+	- `gWin1.getEvent();`
  
+## TODO
+- Add more events like the letter WASD and QE.
+- Also, add event handler support where one can pass a function for a specific event click instead of handling it explicitly.

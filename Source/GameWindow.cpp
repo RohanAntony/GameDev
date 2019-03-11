@@ -27,15 +27,37 @@ bool GameWindow::loadImage(string imagePath) {
 	return true;
 }
 
-void GameWindow::wait() {
+GameEvents GameWindow::getEvent() {
 	SDL_Event e;
-	bool quit = false;
-	while (!quit) {
-		while (SDL_PollEvent(&e) != 0) {
-			if (e.type == SDL_QUIT)
-				quit = true;
+	GameEvents gEv = GameEvents::NONE;
+	if (SDL_PollEvent(&e) != 0) {
+		if (e.type == SDL_QUIT) {
+			cout << "Quit!" << endl;
+			gEv = GameEvents::QUIT;
+		}
+		else if (e.type == SDL_KEYDOWN) {
+			switch (e.key.keysym.sym) {
+				case SDLK_UP:
+					cout << "Up!" << endl;
+					gEv = GameEvents::UP;
+					break;
+				case SDLK_DOWN:
+					cout << "Down!" << endl;
+					gEv = GameEvents::DOWN;
+					break;
+				case SDLK_LEFT:
+					cout << "Left!" << endl;
+					gEv = GameEvents::LEFT;
+					break;
+				case SDLK_RIGHT:
+					cout << "Right!" << endl;
+					gEv = GameEvents::RIGHT;
+					break;
+
+			}
 		}
 	}
+	return gEv;
 }
 
 void pause(int delay) {
