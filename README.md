@@ -17,15 +17,15 @@ Wrapper written around C++ for building SDL based items.
 - Setup the build environment as mentioned above
 - Include 'GameWindows.h'.
 - Initialize main with object of GameBase such as below which will setup and teardown SDL for you.
-	`GameBase gb;`
+	- `GameBase gb;`
 - Create a GameWindow object which will handle SDL Window. 
-	`GameWindow gWin1(int top, int left, int width, int height, "Name for window")`
+	- `GameWindow gWin1(int top, int left, int width, int height, "Name for window")`
 - Fill the window with a given color by calling fillWindowWithColor.
-	`gWin1.fillWindowWithColor(int red, int green, int blue);`
+	- `gWin1.fillWindowWithColor(int red, int green, int blue);`
 - Load a image onto the window based on path of image
-	`gWin1.loadImage(string pathToImage);`
+	- `gWin1.loadImage(string pathToImage);`
 - Update the window surface after all operations to reflect changes
-	`gWin1.updateWindowSurface();`
+	- `gWin1.updateWindowSurface();`
 - Also pause execution by calling pause
-	`pause(int milliseconds);`
+	- `pause(int milliseconds);`
  

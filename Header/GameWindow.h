@@ -1,10 +1,15 @@
 #pragma once
 
+#include <iostream>
 #include <SDL.h>
 #include <string>
-#include "GameBase.h"
+
+#include "GameException.h"
 
 using std::string;
+using std::endl;
+using std::cerr;
+using std::cout;
 
 class GameWindow {
 	int screenWidth;

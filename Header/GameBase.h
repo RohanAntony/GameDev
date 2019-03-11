@@ -3,12 +3,11 @@
 #include <iostream>
 #include <SDL.h>
 
+#include "GameException.h"
+
 using std::endl;
 using std::cerr;
 using std::cout;
-
-class GameExceptions {
-};
 
 class GameBase {
 public:
