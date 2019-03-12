@@ -31,6 +31,10 @@ Wrapper written around C++ for building SDL based items.
 - To get the last event clicked, call getEvent which returns a value for enum GameEvents;
 	- `gWin1.getEvent();`
  
+
 ## TODO
+- Update Readme on using hardware rendering
+- Update Readme on using SDL_image.h class
+- Refactor code to remove redundant code
 - Add more events like the letter WASD and QE.
 - Also, add event handler support where one can pass a function for a specific event click instead of handling it explicitly.

@@ -11,6 +11,12 @@ using std::endl;
 using std::cerr;
 using std::cout;
 
+enum class ImgTypes {
+	BMP,
+	PNG,
+	JPG
+};
+
 enum class GameEvents {
 	QUIT,
 	UP,
@@ -20,39 +26,38 @@ enum class GameEvents {
 	NONE
 };
 
+enum class RenderingType {
+	SURFACE,
+	TEXTURE
+};
+
 class GameWindow {
 	int screenWidth;
 	int screenHeight;
 	int positionLeft; 
 	int positionTop;
 	string windowTitle;
+	RenderingType lastUsedRenderingType;
 
 	SDL_Window* window;
+	SDL_Texture* texture;
+	SDL_Renderer* renderer;
 
+protected:
 	SDL_Surface* getWindowSurface();
-public:
-	GameWindow(int top, int left, int width, int height, string title) :
-		screenWidth(width), screenHeight(height), 
-		positionLeft(left), positionTop(top),
-		windowTitle(title) 
-	{
-		window = SDL_CreateWindow(title.c_str(), left, top, width, height, SDL_WINDOW_SHOWN);
-		if (window == NULL) {
-			cerr << "Window could not be created" << SDL_GetError();
-			throw GameExceptions{};
-		}
-		cout << "Window created with title " << title << endl;
-	}
+	SDL_Surface* loadBMP(string);
+	SDL_Surface* loadOtherImgTypes(string);
 
+public:
+	GameWindow(int, int, int, int, string);
+	
 	void fillWindowWithColor(int, int, int);
-	void updateWindowSurface();
-	bool loadImage(string);
+	void updateWindow();
+	bool loadImageWithSurface(string, ImgTypes);
+	bool loadImageWithTexture(string, ImgTypes);
 	GameEvents getEvent();
 
-	~GameWindow() {
-		SDL_DestroyWindow(window);
-		window = NULL;
-	}
+	~GameWindow();
 };
 
 void pause(int);
