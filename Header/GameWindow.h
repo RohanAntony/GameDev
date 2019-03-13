@@ -5,31 +5,12 @@
 #include <string>
 
 #include "GameException.h"
+#include "SupportUtils.h"
 
 using std::string;
 using std::endl;
 using std::cerr;
 using std::cout;
-
-enum class ImgTypes {
-	BMP,
-	PNG,
-	JPG
-};
-
-enum class GameEvents {
-	QUIT,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	NONE
-};
-
-enum class RenderingType {
-	SURFACE,
-	TEXTURE
-};
 
 class GameWindow {
 	int screenWidth;
@@ -56,6 +37,7 @@ public:
 	bool loadImageWithSurface(string, ImgTypes);
 	bool loadImageWithTexture(string, ImgTypes);
 	GameEvents getEvent();
+	void drawRect(Rect rect, Color color, Color clearColor);
 
 	~GameWindow();
 };

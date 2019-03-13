@@ -45,6 +45,9 @@ void GameWindow::updateWindow() {
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
+	else if (lastUsedRenderingType == RenderingType::RENDERER) {
+		SDL_RenderPresent(renderer);
+	}
 }
 
 SDL_Surface* GameWindow::loadBMP(string imagePath) {
@@ -140,6 +143,15 @@ GameEvents GameWindow::getEvent() {
 		}
 	}
 	return gEv;
+}
+
+void GameWindow::drawRect(Rect rect, Color color, Color clearColor) {
+	SDL_SetRenderDrawColor(renderer, clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha);
+	SDL_RenderClear(renderer);
+	SDL_Rect fillRect = { rect.top, rect.left, rect.width, rect.height };
+	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
+	SDL_RenderFillRect(renderer, &fillRect);
+	lastUsedRenderingType = RenderingType::RENDERER;
 }
 
 GameWindow::~GameWindow() {
