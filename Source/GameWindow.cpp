@@ -7,23 +7,24 @@
 
 using std::string;
 
-GameWindow::GameWindow(int top, int left, int width, int height, string title) :
+GameWindow::GameWindow(int top, int left, int width, int height, string title, LogBase& log) :
 	screenWidth(width), screenHeight(height),
 	positionLeft(left), positionTop(top),
-	windowTitle(title), lastUsedRenderingType(RenderingType::SURFACE)
+	windowTitle(title), lastUsedRenderingType(RenderingType::SURFACE),
+	log(log)
 {
 	window = SDL_CreateWindow(title.c_str(), left, top, width, height, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		cerr << "Window could not be created" << SDL_GetError();
+		log.error("Window could not be created" + string(SDL_GetError()));
 		throw GameExceptions{};
 	}
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == NULL) {
-		cerr << "Renderer could not be created! Error: " << SDL_GetError();
+		log.error("Renderer could not be created! Error: " + string(SDL_GetError()));
 		throw GameExceptions{};
 	}
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, 0xFF);
-	cout << "Window created with title " << title << endl;
+	log.debug("Window created with title " + title);
 }
 
 
@@ -53,7 +54,7 @@ void GameWindow::updateWindow() {
 SDL_Surface* GameWindow::loadBMP(string imagePath) {
 	SDL_Surface* tSurface = SDL_LoadBMP(imagePath.c_str());
 	if (tSurface == NULL) {
-		cerr << "Unable to load image " << imagePath.c_str() << endl;
+		log.error("Unable to load image " + imagePath);
 		return NULL;
 	}
 	return tSurface;
@@ -64,13 +65,13 @@ SDL_Surface* GameWindow::loadOtherImgTypes(string imagePath) {
 	SDL_Surface* loadedSurface = IMG_Load(imagePath.c_str());
 	SDL_Surface* surface = getWindowSurface();
 	if (loadedSurface == NULL) {
-		cerr << "Error while loading image: " << imagePath << endl;
+		log.error("Error while loading image: " + imagePath);
 		return NULL;
 	}
 	else {
 		optimizedSurface = SDL_ConvertSurface(loadedSurface, surface->format, NULL);
 		if (optimizedSurface == NULL) {
-			cerr << "Unable to optimize image, Error: " << SDL_GetError();
+			log.error("Unable to optimize image, Error: " + string(SDL_GetError()));
 			return NULL;
 		}
 		SDL_FreeSurface(loadedSurface);
@@ -104,7 +105,7 @@ bool GameWindow::loadImageWithTexture(string imagePath, ImgTypes type) {
 		return false;
 	texture = SDL_CreateTextureFromSurface(renderer, tSurface);
 	if (!texture) {
-		cerr << "Error while loading texting! Error: " << SDL_GetError() << endl;
+		log.error("Error while loading texture! Error: " + string(SDL_GetError()));
 		return false;
 	}
 	SDL_FreeSurface(tSurface);
@@ -145,12 +146,22 @@ GameEvents GameWindow::getEvent() {
 	return gEv;
 }
 
-void GameWindow::drawRect(Rect rect, Color color, Color clearColor) {
+void GameWindow::clearWindow() {
+	Color clearColor = { 0xFF, 0xFF, 0xFF, 0xFF };
 	SDL_SetRenderDrawColor(renderer, clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha);
 	SDL_RenderClear(renderer);
+}
+
+void GameWindow::drawRect(Rect rect, Color color) {
 	SDL_Rect fillRect = { rect.top, rect.left, rect.width, rect.height };
 	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 	SDL_RenderFillRect(renderer, &fillRect);
+	lastUsedRenderingType = RenderingType::RENDERER;
+}
+
+void GameWindow::drawLine(Line line, Color color) {
+	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
+	SDL_RenderDrawLine(renderer, line.startX, line.startY, line.endX, line.endY);
 	lastUsedRenderingType = RenderingType::RENDERER;
 }
 

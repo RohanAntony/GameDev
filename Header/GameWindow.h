@@ -6,6 +6,7 @@
 
 #include "GameException.h"
 #include "SupportUtils.h"
+#include "LogBase.h"
 
 using std::string;
 using std::endl;
@@ -24,20 +25,24 @@ class GameWindow {
 	SDL_Texture* texture;
 	SDL_Renderer* renderer;
 
+	LogBase &log;
+
 protected:
 	SDL_Surface* getWindowSurface();
 	SDL_Surface* loadBMP(string);
 	SDL_Surface* loadOtherImgTypes(string);
 
 public:
-	GameWindow(int, int, int, int, string);
+	GameWindow(int, int, int, int, string, LogBase&);
 	
 	void fillWindowWithColor(int, int, int);
 	void updateWindow();
 	bool loadImageWithSurface(string, ImgTypes);
 	bool loadImageWithTexture(string, ImgTypes);
 	GameEvents getEvent();
-	void drawRect(Rect rect, Color color, Color clearColor);
+	void clearWindow();
+	void drawRect(Rect rect, Color color);
+	void drawLine(Line line, Color color);
 
 	~GameWindow();
 };

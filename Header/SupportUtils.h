@@ -35,3 +35,7 @@ struct Rect {
 	int width;
 	int height;
 };
+
+struct Line {
+	int startX, startY, endX, endY;
+};
