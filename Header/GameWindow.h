@@ -39,6 +39,7 @@ public:
 	void updateWindow();
 	bool loadImageWithSurface(string, ImgTypes);
 	bool loadImageWithTexture(string, ImgTypes);
+	bool loadFromRenderedText(string text);
 	GameEvents getEvent();
 	void clearWindow();
 	void drawRect(Rect rect, Color color);

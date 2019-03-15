@@ -3,6 +3,7 @@
 #include <string>
 
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "GameWindow.h"
 
 using std::string;
@@ -163,6 +164,31 @@ void GameWindow::drawLine(Line line, Color color) {
 	SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 	SDL_RenderDrawLine(renderer, line.startX, line.startY, line.endX, line.endY);
 	lastUsedRenderingType = RenderingType::RENDERER;
+}
+
+bool GameWindow::loadFromRenderedText(string text) {
+	TTF_Font *gFont = TTF_OpenFont("Fonts\\Roboto\\Roboto-Thin.ttf", 28);
+
+	SDL_Texture* mTexture = NULL;
+	SDL_Color textColor = {0, 0, 0};
+	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, text.c_str(), textColor);
+	if (textSurface == NULL) {
+		log.error("Unable to render text surface! SDL_Error" + string(TTF_GetError()));
+		return false;
+	}
+	else {
+		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		if (mTexture == NULL) {
+			log.error("Unable to create texture from rendered text! SDL Error " + string(SDL_GetError()));
+			return false;
+		}
+		else {
+			texture = mTexture;
+			lastUsedRenderingType = RenderingType::TEXTURE;
+			SDL_FreeSurface(textSurface);
+		}
+	}
+	return mTexture != NULL;
 }
 
 GameWindow::~GameWindow() {

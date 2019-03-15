@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "GameException.h"
 #include "LogBase.h"
@@ -26,8 +27,13 @@ public:
 			log.error("Image load library could not initialize! Error: " + string(IMG_GetError()));
 			throw GameExceptions{};
 		}
+		if (TTF_Init() == -1) {
+			log.error("SDL_ttf could not initialize! Error: " + string(SDL_GetError()));
+			throw GameExceptions{};
+		}
 	}
 	~GameBase() {
+		TTF_Quit();
 		IMG_Quit();
 		SDL_Quit();
 	}
