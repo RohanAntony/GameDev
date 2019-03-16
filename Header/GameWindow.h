@@ -44,6 +44,7 @@ public:
 	void clearWindow();
 	void drawRect(Rect rect, Color color);
 	void drawLine(Line line, Color color);
+	void setViewPort(int startX, int startY, int endX, int endY);
 
 	~GameWindow();
 };

@@ -24,7 +24,7 @@ GameWindow::GameWindow(int top, int left, int width, int height, string title, L
 		log.error("Renderer could not be created! Error: " + string(SDL_GetError()));
 		throw GameExceptions{};
 	}
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, 0xFF);
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, 0);
 	log.debug("Window created with title " + title);
 }
 
@@ -43,7 +43,6 @@ void GameWindow::updateWindow() {
 	if (lastUsedRenderingType == RenderingType::SURFACE)
 		SDL_UpdateWindowSurface(window);
 	else if (lastUsedRenderingType == RenderingType::TEXTURE) {
-		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
@@ -167,10 +166,10 @@ void GameWindow::drawLine(Line line, Color color) {
 }
 
 bool GameWindow::loadFromRenderedText(string text) {
-	TTF_Font *gFont = TTF_OpenFont("Fonts\\Roboto\\Roboto-Thin.ttf", 28);
+	TTF_Font *gFont = TTF_OpenFont("Fonts\\Roboto\\Roboto-Regular.ttf", 28);
 
 	SDL_Texture* mTexture = NULL;
-	SDL_Color textColor = {0, 0, 0};
+	SDL_Color textColor = {0xFF, 0xFF, 0xFF};
 	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, text.c_str(), textColor);
 	if (textSurface == NULL) {
 		log.error("Unable to render text surface! SDL_Error" + string(TTF_GetError()));
@@ -189,6 +188,15 @@ bool GameWindow::loadFromRenderedText(string text) {
 		}
 	}
 	return mTexture != NULL;
+}
+
+void GameWindow::setViewPort(int startX, int startY, int endX, int endY) {
+	SDL_Rect viewPort;
+	viewPort.x = startX;
+	viewPort.y = startY;
+	viewPort.w = endX - startX;
+	viewPort.h = endY - startY;
+	SDL_RenderSetViewport(renderer, &viewPort);
 }
 
 GameWindow::~GameWindow() {
