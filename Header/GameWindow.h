@@ -13,41 +13,37 @@ using std::endl;
 using std::cerr;
 using std::cout;
 
-class GameWindow {
-	int screenWidth;
-	int screenHeight;
-	int positionLeft; 
-	int positionTop;
-	string windowTitle;
-	RenderingType lastUsedRenderingType;
+namespace GaLib {
+	class Window {
+		int screenWidth;
+		int screenHeight;
+		int positionLeft;
+		int positionTop;
+		string windowTitle;
 
-	SDL_Window* window;
-	SDL_Texture* texture;
-	SDL_Renderer* renderer;
+		SDL_Window* window;
 
-	LogBase &log;
+		LogBase &log;
 
-protected:
-	SDL_Surface* getWindowSurface();
-	SDL_Surface* loadBMP(string);
-	SDL_Surface* loadOtherImgTypes(string);
+	protected:
+		SDL_Surface* getWindowSurface();
+		SDL_Surface* loadBMP(string);
+		SDL_Surface* loadOtherImgTypes(string);
 
-public:
-	GameWindow(int, int, int, int, string, LogBase&);
-	
-	void fillWindowWithColor(int, int, int); //make private function and use it in .clear function
-	void updateWindow();	
-	bool loadImageWithSurface(string, ImgTypes);
-	bool loadImageWithTexture(string, ImgTypes);
-	bool loadFromRenderedText(string text);
-	GameEvents getEvent();
-	void clearWindow();
-	void drawRect(Rect rect, Color color);
-	void drawLine(Line line, Color color);
-	void setViewPort(int startX, int startY, int endX, int endY);
+	public:
+		Window(int, int, int, int, string, LogBase&);
 
-	~GameWindow();
-};
+		void fillWindowWithColor(int, int, int); //make private function and use it in .clear function
+		void updateWindow();
+		bool loadImageWithSurface(string, ImgTypes);
+		bool loadImageWithTexture(string, ImgTypes);
+		bool loadFromRenderedText(string text);
+		GameEvents getEvent();
+		void clearWindow();
+
+		~Window();
+	};
+}
 
 void pause(int);
 

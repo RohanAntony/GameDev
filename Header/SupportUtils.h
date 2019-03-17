@@ -1,41 +1,39 @@
-#pragma once
+#ifndef GALIB_SUPPORT_UTILS_HEADER
+#define GALIB_SUPPORT_UTILS_HEADER
 
+namespace GaLib {
+	enum class ImgTypes {
+		BMP,
+		PNG,
+		JPG
+	};
 
-enum class ImgTypes {
-	BMP,
-	PNG,
-	JPG
-};
+	enum class Events {
+		QUIT,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		NONE
+	};
 
-enum class GameEvents {
-	QUIT,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	NONE
-};
+	struct Color {
+		Uint8 red;
+		Uint8 green;
+		Uint8 blue;
+		Uint8 alpha;
+	};
 
-enum class RenderingType {
-	SURFACE,
-	TEXTURE,
-	RENDERER
-};
+	struct Rect {
+		int left;
+		int top;
+		int width;
+		int height;
+	};
 
-struct Color {
-	int red;
-	int green;
-	int blue;
-	int alpha;
-};
+	struct Line {
+		int startX, startY, endX, endY;
+	};
+}
 
-struct Rect {
-	int left;
-	int top;
-	int width;
-	int height;
-};
-
-struct Line {
-	int startX, startY, endX, endY;
-};
+#endif
