@@ -166,7 +166,7 @@ void GameWindow::drawLine(Line line, Color color) {
 }
 
 bool GameWindow::loadFromRenderedText(string text) {
-	TTF_Font *gFont = TTF_OpenFont("Fonts\\Roboto\\Roboto-Regular.ttf", 28);
+	TTF_Font *gFont = TTF_OpenFont("Fonts\\Roboto\\Roboto-Regular.ttf", 100);
 
 	SDL_Texture* mTexture = NULL;
 	SDL_Color textColor = {0xFF, 0xFF, 0xFF};

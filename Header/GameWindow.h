@@ -35,8 +35,8 @@ protected:
 public:
 	GameWindow(int, int, int, int, string, LogBase&);
 	
-	void fillWindowWithColor(int, int, int);
-	void updateWindow();
+	void fillWindowWithColor(int, int, int); //make private function and use it in .clear function
+	void updateWindow();	
 	bool loadImageWithSurface(string, ImgTypes);
 	bool loadImageWithTexture(string, ImgTypes);
 	bool loadFromRenderedText(string text);
@@ -50,3 +50,5 @@ public:
 };
 
 void pause(int);
+
+//create a font class which has the renderText method, pass this object to Window object
