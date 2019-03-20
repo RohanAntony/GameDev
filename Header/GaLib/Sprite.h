@@ -1,3 +1,6 @@
+#ifndef GALIB_SPRITE_HEADER
+#define GALIB_SPRITE_HEADER
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <algorithm>
@@ -40,8 +43,7 @@ namespace GaLib {
 				loadedSurface = loadOtherImgTypes(imagePath);
 			if (loadedSurface == NULL)
 				return false;
-			SDL_BlitScaled(loadedSurface, NULL, surface, NULL);
-			SDL_FreeSurface(loadedSurface);
+			surface = loadedSurface;
 			return true;
 		}
 
@@ -69,8 +71,14 @@ namespace GaLib {
 			loadImage(imagePath, getExtensionOfFile(imagePath));
 		}
 
+		SDL_Surface* getSurface() {
+			return surface;
+		}
+
 		~Sprite() {
 			SDL_FreeSurface(surface);
 		}
 	};
 }
+
+#endif

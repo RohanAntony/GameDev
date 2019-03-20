@@ -25,11 +25,12 @@ namespace GaLib {
 		Uint8 alpha;
 	};
 
+	template <class T>
 	struct Rect {
-		int left;
-		int top;
-		int width;
-		int height;
+		T left;
+		T top;
+		T width;
+		T height;
 	};
 
 	struct Line {

@@ -15,7 +15,7 @@ namespace GaLib {
 		SDL_Renderer* renderer;
 		SDL_Window* window;	//Get this set from the parent function
 	public:
-		Renderer(SDL_Window* window, LogBase &log) :
+		Renderer(SDL_Window* window, LogBase &log) : 
 			log(log), window(window), 
 			renderer(NULL), texture(NULL),
 			clearColor({0, 0, 0, 0xFF})
@@ -72,7 +72,7 @@ namespace GaLib {
 			clearColor = color;
 		}
 
-		inline void drawRect(Rect rect, Color color) {
+		inline void drawRect(Rect<int> rect, Color color) {
 			SDL_Rect fillRect = { rect.top, rect.left, rect.width, rect.height };
 			SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 			SDL_RenderFillRect(renderer, &fillRect);

@@ -16,7 +16,7 @@ namespace GaLib {
 		Color clearColor;
 
 	public:
-		WindowHW(Rect dim, string title, LogBase& log) :
+		WindowHW(Rect<int> dim, string title, LogBase& log) :
 			Window(dim, title, log),
 			logger(log), clearColor({0, 0, 0, 0xFF})
 		{
@@ -24,7 +24,7 @@ namespace GaLib {
 			renderer = new Renderer(window, log);
 		}
 
-		virtual bool loadImage(string imagePath, ImgTypes type) {
+		/*virtual bool loadImage(string imagePath, ImgTypes type) {
 			SDL_Surface* loadedSurface;
 			SDL_Surface* surface = getWindowSurface();
 			SDL_Texture* texture = NULL;
@@ -38,7 +38,7 @@ namespace GaLib {
 			updateWindow();
 			SDL_FreeSurface(loadedSurface);
 			return true;
-		}
+		}*/
 
 		virtual void updateWindow() {
 			renderer->updateWindow();
@@ -58,7 +58,7 @@ namespace GaLib {
 			updateWindow();
 		}
 
-		void drawRect(Rect rect, Color color = { 0, 0, 0, 0xFF }) {
+		void drawRect(Rect<int> rect, Color color = { 0, 0, 0, 0xFF }) {
 			renderer->drawRect(rect, color);
 		}
 

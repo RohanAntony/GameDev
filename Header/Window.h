@@ -8,22 +8,26 @@
 #include "Exception.h"
 #include "SupportUtils.h"
 #include "LogBase.h"
+#include "GaLib/Sprite.h"
+#include "GaLib/SpriteInstance.h"
+#include <map>
 
 using std::string;
 using std::endl;
 using std::cerr;
 using std::cout;
+using std::map;
 
 namespace GaLib {
 
 
 	class Window {
-		Rect windowDimensions;
+		Rect<int> windowDimensions;
 		string windowTitle;
 		SDL_Window* window;
-		Color clearColor;
 		LogBase &log;
-
+		map<int, SpriteInstance*> sprites;
+		int spriteCount;
 	protected:
 		SDL_Window* getWindow() {
 			return window;
@@ -33,40 +37,22 @@ namespace GaLib {
 			return SDL_GetWindowSurface(window);
 		}
 
-		SDL_Surface* loadBMP(string imagePath) {
-			SDL_Surface* loadedSurface = SDL_LoadBMP(imagePath.c_str());
-			SDL_Surface* surface = getWindowSurface();
-			if (loadedSurface == NULL) {
-				log.error("Unable to load image " + imagePath);
-				return NULL;
-			}
-			return loadedSurface;
+		inline int getXPos(float val) {
+			if (val > 1 || val < 0)
+				val = 0;
+			return static_cast<int>(windowDimensions.width * val);
 		}
 
-		SDL_Surface* loadOtherImgTypes(string imagePath) {
-			SDL_Surface* optimizedSurface = NULL;
-			SDL_Surface* loadedSurface = IMG_Load(imagePath.c_str());
-			SDL_Surface* surface = getWindowSurface();
-			if (loadedSurface == NULL) {
-				log.error("Error while loading image: " + imagePath);
-				return NULL;
-			}
-/*			else {
-				optimizedSurface = SDL_ConvertSurface(loadedSurface, surface->format, NULL);
-				if (optimizedSurface == NULL) {
-					log.error("Unable to optimize image, Error: " + string(SDL_GetError()));
-					SDL_FreeSurface(loadedSurface);
-					return NULL;
-				}
-				return optimizedSurface;
-			}*/
-			return loadedSurface;
+		inline int getYPos(float val) {
+			if (val > 1 || val < 0)
+				val = 0;
+			return static_cast<int>(windowDimensions.height * val);
 		}
 
 	public:
-		Window(Rect dim, string title, LogBase& logger) :
+		Window(Rect<int> dim, string title, LogBase& logger) :
 			windowDimensions(dim), windowTitle(title),
-			log(logger), clearColor({0, 0, 0, 0xFF}), window(NULL)
+			log(logger), window(NULL), spriteCount(0)
 		{
 			window = SDL_CreateWindow(title.c_str(), dim.left, dim.top, dim.width, dim.height, SDL_WINDOW_SHOWN);
 			if (window == NULL) {
@@ -109,34 +95,41 @@ namespace GaLib {
 			return gEv;
 		}
 
-		virtual bool loadImage(string imagePath, ImgTypes type) {
-			SDL_Surface* loadedSurface;
-			SDL_Surface* surface = getWindowSurface();
-			if (type == ImgTypes::BMP)
-				loadedSurface = loadBMP(imagePath);
-			else
-				loadedSurface = loadOtherImgTypes(imagePath);
-			if (loadedSurface == NULL)
-				return false;
-			/*SDL_Rect dest;
-			dest.x = 150;
-			dest.y = 150;
-			dest.w = 150;
-			dest.h = 150;*/
-			SDL_BlitScaled(loadedSurface, NULL, surface, NULL);
-			updateWindow();
-			SDL_FreeSurface(loadedSurface);
-			return true;
+		int addSprite(string imagePath, Rect<float> dim = {0, 0, 1.0, 1.0}, bool visibility = true) {
+			sprites.insert(std::pair<int, SpriteInstance*>(spriteCount,new SpriteInstance(imagePath, dim, visibility, log)));
+			return spriteCount++;
+		}
+
+		void modifySpriteDim(int id, float top, float left, float width, float height) {
+			SpriteInstance* s = sprites.at(id);
+			s->updateDimensions(top, left, width, height);
+		}
+
+		void hideSprite(int id) {
+			sprites.at(id)->hide();
+		}
+
+		void showSprite(int id) {
+			sprites.at(id)->show();
 		}
 
 		virtual void updateWindow() {
+			for (auto &s : sprites) {
+				SpriteInstance *sprite = s.second;
+				SDL_Rect dim = sprite->getDimensions(windowDimensions.width, windowDimensions.height);
+				SDL_BlitScaled(sprite->getSurface(), NULL, getWindowSurface(), &dim);
+			}
 			SDL_UpdateWindowSurface(window);
 		}
 
-		virtual void clearWindow() {
-			SDL_Surface* screenSurface = getWindowSurface();
-			SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, clearColor.red, clearColor.green, clearColor.blue));
-			updateWindow();
+		virtual bool loadImage(string imagePath) {
+			Sprite *image = new Sprite(imagePath, log);
+			SDL_Surface *tempSurface = image->getSurface();
+			if (tempSurface == NULL)
+				return false;
+			SDL_BlitScaled(tempSurface, NULL, getWindowSurface(), NULL);
+			delete image;
+			return true;
 		}
 
 		~Window() {
