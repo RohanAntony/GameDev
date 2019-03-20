@@ -52,7 +52,7 @@ namespace GaLib {
 			renderer->setClearColor(clear);
 		}
 
-		void displayText(string text, string font, int size = 100, Color color = { 0, 0, 0, 0xFF }) {
+		void displayText(string text, string font, int size = 100, Color color = { 0xFF, 0xAD, 0, 0xFF }) {
 			Font robotoRegular{ font, size, color, renderer, logger };
 			robotoRegular.displayText(text);
 			updateWindow();

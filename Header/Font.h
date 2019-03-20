@@ -15,7 +15,7 @@ using std::string;
 
 namespace GaLib {
 
-	const string fontsPath = "Fonts\\";
+	const string fontsPath = "";
 	const int DEFAULT_FONT_SIZE = 28;
 	const Color DEFAULT_COLOR = { 0, 0, 0, 0xFF };
 
@@ -31,6 +31,7 @@ namespace GaLib {
 			fontSize(size), color(color),
 			log(log), renderer(renderer)
 		{
+			log.debug("Creating a font object");
 			string path = fontsPath + font;
 			gFont = TTF_OpenFont(path.c_str(), size);
 			if (gFont == NULL) {
@@ -56,8 +57,10 @@ namespace GaLib {
 				return false;
 			}
 			else {
+				log.debug("Displaying text:" + text);
 				renderer->updateRendererWithSurface(textSurface);
 				SDL_FreeSurface(textSurface);
+				return true;
 			}
 		}
 

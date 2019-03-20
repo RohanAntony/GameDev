@@ -5,7 +5,8 @@ namespace GaLib {
 	enum class ImgTypes {
 		BMP,
 		PNG,
-		JPG
+		JPG,
+		NONE
 	};
 
 	enum class Events {

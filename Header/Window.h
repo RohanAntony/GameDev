@@ -21,7 +21,6 @@ namespace GaLib {
 		Rect windowDimensions;
 		string windowTitle;
 		SDL_Window* window;
-		SDL_Surface* windowSurface;
 		Color clearColor;
 		LogBase &log;
 
@@ -67,7 +66,7 @@ namespace GaLib {
 	public:
 		Window(Rect dim, string title, LogBase& logger) :
 			windowDimensions(dim), windowTitle(title),
-			log(logger), clearColor({0, 0, 0, 0xFF})
+			log(logger), clearColor({0, 0, 0, 0xFF}), window(NULL)
 		{
 			window = SDL_CreateWindow(title.c_str(), dim.left, dim.top, dim.width, dim.height, SDL_WINDOW_SHOWN);
 			if (window == NULL) {
@@ -119,7 +118,12 @@ namespace GaLib {
 				loadedSurface = loadOtherImgTypes(imagePath);
 			if (loadedSurface == NULL)
 				return false;
-			SDL_BlitSurface(loadedSurface, NULL, surface, NULL);
+			/*SDL_Rect dest;
+			dest.x = 150;
+			dest.y = 150;
+			dest.w = 150;
+			dest.h = 150;*/
+			SDL_BlitScaled(loadedSurface, NULL, surface, NULL);
 			updateWindow();
 			SDL_FreeSurface(loadedSurface);
 			return true;

@@ -25,6 +25,7 @@ namespace GaLib {
 				log.error("Renderer could not be created! Error: " + string(SDL_GetError()));
 				throw Exception{};
 			}
+			log.debug("Created renderer");
 		}
 
 		Renderer(SDL_Window* window, LogBase &log, Color color) :
@@ -37,15 +38,23 @@ namespace GaLib {
 				log.error("Renderer could not be created! Error: " + string(SDL_GetError()));
 				throw Exception{};
 			}
+			log.debug("Created renderer");
 		}
 
 		inline void updateWindow() {
+			log.debug("Calling updateWindow");
 			SDL_RenderPresent(renderer);
 		}
 
 		inline void updateTexture(SDL_Texture* mTexture) {
 			texture = mTexture;
-			SDL_RenderCopy(renderer, texture, NULL, NULL);
+			SDL_Rect destRect;
+			destRect.x = 150;
+			destRect.y = 150;
+			destRect.w = 150;
+			destRect.h = 150;
+			SDL_RenderCopy(renderer, texture, NULL, &destRect);
+			log.debug("Copying texture to renderer");
 			updateWindow();
 		}
 
@@ -55,6 +64,7 @@ namespace GaLib {
 			SDL_SetRenderDrawColor(renderer, clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha);
 			SDL_RenderClear(renderer);
 			SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);
+			log.debug("Clearing window");
 			updateWindow();
 		}
 
@@ -66,12 +76,14 @@ namespace GaLib {
 			SDL_Rect fillRect = { rect.top, rect.left, rect.width, rect.height };
 			SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 			SDL_RenderFillRect(renderer, &fillRect);
+			log.debug("Drawing a rectangle");
 			updateWindow();
 		}
 
 		inline void drawLine(Line line, Color color) {
 			SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha);
 			SDL_RenderDrawLine(renderer, line.startX, line.startY, line.endX, line.endY);
+			log.debug("Drawing a line");
 			updateWindow();
 		}
 
@@ -94,7 +106,9 @@ namespace GaLib {
 				log.error("Error while loading texture! Error: " + string(SDL_GetError()));
 				return false;
 			}
+			log.debug("Calling updateRenderer with surface");
 			updateTexture(mTexture);
+			return true;
 		}
 
 		~Renderer() {
