@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <string>
 
-#include "LogBase.h"
-#include "SupportUtils.h"
+#include "Logger/LogBase.h"
+#include "GaLib/SupportUtils.h"
 
 using std::string;
 
@@ -35,7 +35,7 @@ namespace GaLib {
 			return loadedSurface;
 		}
 
-		bool loadImage(string imagePath, ImgTypes type) {
+		bool loadImage(string imagePath, ImgTypes type, Color maskColor) {
 			SDL_Surface* loadedSurface;
 			if (type == ImgTypes::BMP)
 				loadedSurface = loadBMP(imagePath);
@@ -43,6 +43,12 @@ namespace GaLib {
 				loadedSurface = loadOtherImgTypes(imagePath);
 			if (loadedSurface == NULL)
 				return false;
+			SDL_bool enableMasking = SDL_FALSE;
+			if (maskColor.alpha == 0xFF)
+				enableMasking = SDL_TRUE;
+			SDL_SetColorKey(loadedSurface, enableMasking, 
+				SDL_MapRGB(loadedSurface->format, maskColor.red, maskColor.green, maskColor.blue)
+			);
 			surface = loadedSurface;
 			return true;
 		}
@@ -65,10 +71,11 @@ namespace GaLib {
 		}
 
 	public:
-		Sprite(string imagePath, LogBase& log) :
+		Sprite(string imagePath, Color maskColor, LogBase& log) :
 			log(log), surface(NULL)
 		{
-			loadImage(imagePath, getExtensionOfFile(imagePath));
+			//add code to loadImage with color key set
+			loadImage(imagePath, getExtensionOfFile(imagePath), maskColor);
 		}
 
 		SDL_Surface* getSurface() {

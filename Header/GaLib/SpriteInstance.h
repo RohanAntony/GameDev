@@ -2,23 +2,34 @@
 #define GALIB_INSTANCE_HEADER
 
 #include "GaLib/Sprite.h"
-#include "SupportUtils.h"
-#include "LogBase.h"
+#include "GaLib/SupportUtils.h"
+#include "Logger/LogBase.h"
 
 namespace GaLib {
 	class SpriteInstance {
 		Sprite *sprite;
 		LogBase &log;
-		Rect<float> destDim;	//define the dimensions of the destination
+		bool absDim;
+		Rect<double> destDim;	//define the dimensions of the destination
+		Rect<int> destDimAbs;
 		bool visible;
 	public:
-		SpriteInstance(string imagePath, Rect<float> rect, bool isVisible, LogBase& log):
+		SpriteInstance(string imagePath, Rect<double> rect, Color maskColor, bool isVisible, LogBase& log):
 			sprite(NULL), log(log), destDim(rect), visible(isVisible)
 		{
-			sprite = new Sprite(imagePath, log);
+			sprite = new Sprite(imagePath, maskColor, log);
+			absDim = false;
 		}
 
-		void setNewDimensions(Rect<float> newDim) {
+		//set absolute dimensions
+		SpriteInstance(string imagePath, Rect<int> rect, Color maskColor, bool isVisible, LogBase& log) :
+			sprite(NULL), log(log), destDimAbs(rect), visible(isVisible)
+		{
+			sprite = new Sprite(imagePath, maskColor, log);
+			absDim = true;
+		}
+
+		void setNewDimensions(Rect<double> newDim) {
 			destDim = newDim;
 		}
 
@@ -34,24 +45,44 @@ namespace GaLib {
 			visible = true;
 		}
 
-		void updateDimensions(float top, float left, float width, float height) {
+		void updateDimensions(double top, double left, double width, double height) {
 			destDim.top += top;
 			destDim.left += left;
 			destDim.width += width;
 			destDim.height += height;
 		}
+		
+		void updateDimensions(int top, int left, int width, int height) {
+			destDimAbs.top += top;
+			destDimAbs.left += left;
+			destDimAbs.width += width;
+			destDimAbs.height += height;
+		}
 
 		SDL_Rect getDimensions(int width, int height) {
 			SDL_Rect dim;
-			dim.x = destDim.left * width;
-			dim.y = destDim.top * height;
-			dim.w = destDim.width * width;
-			dim.h = destDim.height * height;
+			dim.x = static_cast<int>(destDim.left * width);
+			dim.y = static_cast<int>(destDim.top * height);
+			dim.w = static_cast<int>(destDim.width * width);
+			dim.h = static_cast<int>(destDim.height * height);
+			return dim;
+		}
+
+		SDL_Rect getDimensions() {
+			SDL_Rect dim;
+			dim.x = destDimAbs.left;
+			dim.y = destDimAbs.top;
+			dim.w = destDimAbs.width;
+			dim.h = destDimAbs.height;
 			return dim;
 		}
 
 		SDL_Surface* getSurface() {
 			return sprite->getSurface();
+		}
+
+		bool isAbsDim() {
+			return absDim;
 		}
 
 		~SpriteInstance() {

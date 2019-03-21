@@ -3,9 +3,9 @@
 
 #include <SDL.h>
 
-#include "Exception.h"
+#include "GaLib/Exception.h"
 #include "LogBase.h"
-#include "SupportUtils.h"
+#include "GaLib/SupportUtils.h"
 
 namespace GaLib {
 	class Renderer {

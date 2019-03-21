@@ -5,9 +5,9 @@
 #include <SDL.h>
 #include <string>
 
-#include "Exception.h"
-#include "SupportUtils.h"
-#include "LogBase.h"
+#include "GaLib/Exception.h"
+#include "GaLib/SupportUtils.h"
+#include "Logger/LogBase.h"
 #include "GaLib/Sprite.h"
 #include "GaLib/SpriteInstance.h"
 #include <map>
@@ -95,12 +95,28 @@ namespace GaLib {
 			return gEv;
 		}
 
-		int addSprite(string imagePath, Rect<float> dim = {0, 0, 1.0, 1.0}, bool visibility = true) {
-			sprites.insert(std::pair<int, SpriteInstance*>(spriteCount,new SpriteInstance(imagePath, dim, visibility, log)));
+		/*int addSprite(string imagePath,
+			Rect<double> dim = {0, 0, 1.0, 1.0}, 
+			Color maskColor = { 0x00, 0x00, 0x00, 0x00}, 
+			bool visibility = true) {
+			sprites.insert(std::pair<int, SpriteInstance*>(spriteCount,new SpriteInstance(imagePath, dim, maskColor, visibility, log)));
+			return spriteCount++;
+		}*/
+
+		int addSprite(string imagePath,
+			Rect<int> dim = { 0, 0, 0, 0 },
+			Color maskColor = { 0x00, 0x00, 0x00, 0x00 },
+			bool visibility = true) {
+			sprites.insert(std::pair<int, SpriteInstance*>(spriteCount, new SpriteInstance(imagePath, dim, maskColor, visibility, log)));
 			return spriteCount++;
 		}
 
-		void modifySpriteDim(int id, float top, float left, float width, float height) {
+		void modifySpriteDim(int id, double top, double left, double width, double height) {
+			SpriteInstance* s = sprites.at(id);
+			s->updateDimensions(top, left, width, height);
+		}
+
+		void modifySpriteDim(int id, int top, int left, int width, int height) {
 			SpriteInstance* s = sprites.at(id);
 			s->updateDimensions(top, left, width, height);
 		}
@@ -116,14 +132,18 @@ namespace GaLib {
 		virtual void updateWindow() {
 			for (auto &s : sprites) {
 				SpriteInstance *sprite = s.second;
-				SDL_Rect dim = sprite->getDimensions(windowDimensions.width, windowDimensions.height);
+				SDL_Rect dim;
+				if (sprite->isAbsDim())
+					dim = sprite->getDimensions();
+				else
+					dim = sprite->getDimensions(windowDimensions.width, windowDimensions.height);
 				SDL_BlitScaled(sprite->getSurface(), NULL, getWindowSurface(), &dim);
 			}
 			SDL_UpdateWindowSurface(window);
 		}
 
-		virtual bool loadImage(string imagePath) {
-			Sprite *image = new Sprite(imagePath, log);
+		virtual bool loadImage(string imagePath, Color maskColor = { 0x00, 0x00, 0x00, 0x00 }) {
+			Sprite *image = new Sprite(imagePath, maskColor, log);
 			SDL_Surface *tempSurface = image->getSurface();
 			if (tempSurface == NULL)
 				return false;

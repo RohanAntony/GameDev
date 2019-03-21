@@ -3,7 +3,7 @@
 
 #include "Renderer.h"
 #include "Font.h"
-#include "Window.h"
+#include "GaLib/Window.h"
 #include "LogBase.h"
 
 using GaLib::Font;

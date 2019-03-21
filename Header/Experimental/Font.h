@@ -6,10 +6,10 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "Exception.h"
+#include "GaLib/Exception.h"
 #include "LogBase.h"
-#include "SupportUtils.h"
-#include "Renderer.h"
+#include "GaLib/SupportUtils.h"
+#include "Experimental/Renderer.h"
 
 using std::string;
 

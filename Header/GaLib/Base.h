@@ -6,8 +6,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "Exception.h"
-#include "LogBase.h"
+#include "GaLib/Exception.h"
+#include "Logger/LogBase.h"
 
 using std::endl;
 using std::cerr;
